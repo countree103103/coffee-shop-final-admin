@@ -1,7 +1,7 @@
 <template>
   <div>
-    <v-tabs>
-      <v-tab>
+    <v-tabs v-model="tab">
+      <v-tab key="product">
         <v-icon left> mdi-account </v-icon>
         产品列表
       </v-tab>
@@ -13,8 +13,9 @@
         <v-icon left> mdi-access-point </v-icon>
         分类管理
       </v-tab>
-
-      <v-tab-item>
+    </v-tabs>
+    <v-tabs-items touchless v-model="tab">
+      <v-tab-item key="product">
         <div class="product-list">
           <v-simple-table>
             <thead>
@@ -53,7 +54,7 @@
       </v-tab-item>
       <v-tab-item> </v-tab-item>
       <v-tab-item> </v-tab-item>
-    </v-tabs>
+    </v-tabs-items>
   </div>
 </template>
 
@@ -61,7 +62,7 @@
 export default {
   name: "Product",
   data() {
-    return {};
+    return { tab: null };
   },
 };
 </script>
