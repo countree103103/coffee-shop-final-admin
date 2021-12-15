@@ -1,41 +1,67 @@
 <template>
   <v-app>
     <v-app-bar app color="primary" dark>
-      <div class="d-flex align-center">
+      <!-- <template v-slot:img="{ props }">
         <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
+          v-bind="props"
+          gradient="to top right, rgba(100,115,201,.7), rgba(25,32,72,.7)"
+        ></v-img>
+      </template> -->
 
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
+      <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
+
+      <v-toolbar-title>航海咖啡商城后台</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
+      <v-btn icon><v-icon>mdi-logout</v-icon></v-btn>
+
+      <!-- <v-btn icon>
+        <v-icon>mdi-magnify</v-icon>
       </v-btn>
+
+      <v-btn icon>
+        <v-icon>mdi-heart</v-icon>
+      </v-btn> -->
+
+      <!-- <v-menu bottom left>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon color="yellow" v-bind="attrs" v-on="on">
+            <v-icon>mdi-dots-vertical</v-icon>
+          </v-btn>
+        </template>
+
+        <v-list>
+          <v-list-item v-for="(item, i) in items" :key="i">
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu> -->
+
+      <template v-slot:extension>
+        <v-tabs align-with-title>
+          <v-tab @click="$router.push('/product')">产品管理</v-tab>
+          <v-tab @click="$router.push('/user')">用户管理</v-tab>
+          <v-tab @click="$router.push('/order')">订单管理</v-tab>
+        </v-tabs>
+      </template>
     </v-app-bar>
 
     <v-main>
       <router-view />
     </v-main>
+    <v-snackbar
+      v-model="$store.state.snackbar.show"
+      timeout="2000"
+      color="#512c1d"
+    >
+      {{ $store.state.snackbar.msg }}
+      <template v-slot:action="{}">
+        <v-btn @click.native="$store.state.snackbar.show = false" text
+          >关闭</v-btn
+        >
+      </template>
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -46,5 +72,11 @@ export default {
   data: () => ({
     //
   }),
+  methods: {},
 };
 </script>
+<style lang="scss">
+:root {
+  --text-primary: #512c1d;
+}
+</style>
