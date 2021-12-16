@@ -15,6 +15,12 @@
         :value="product.product_name"
         name="product_name"
       ></v-text-field>
+      <v-textarea
+        name="product_des"
+        :value="product.product_des"
+        label="产品描述"
+        outlined
+      ></v-textarea>
       <v-select
         :items="['在架', '下架']"
         :value="product.product_status"
