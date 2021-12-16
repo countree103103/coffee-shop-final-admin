@@ -20,6 +20,7 @@
           <v-simple-table>
             <thead>
               <tr>
+                <th>ID</th>
                 <th>名字</th>
                 <th>分类</th>
                 <th>现价格</th>
@@ -30,19 +31,25 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="i in 5" :key="i">
-                <td>拿铁</td>
-                <td>精品咖啡</td>
-                <td>666￥</td>
-                <td>999￥</td>
-                <td>时间</td>
-                <td>上架</td>
+              <tr v-for="(product, index) in productList" :key="index">
+                <td>{{ product.id }}</td>
+                <td>{{ product.product_name }}</td>
+                <td>{{ product.product_type }}</td>
+                <td>{{ product.product_price_now }}</td>
+                <td>{{ product.product_price_before }}</td>
+                <td>{{ product.product_create_time }}</td>
+                <td>{{ product.product_status }}</td>
                 <td>
                   <v-btn
                     color="success"
                     class="mr-4"
                     small
-                    @click="$router.push('/productDetail')"
+                    @click="
+                      $router.push({
+                        name: 'ProductDetail',
+                        params: { product },
+                      })
+                    "
                     >编辑</v-btn
                   >
                   <v-btn color="error" small>删除</v-btn>
@@ -59,10 +66,23 @@
 </template>
 
 <script>
+import axios from "axios";
+import { showMsg } from "../util";
+
 export default {
   name: "Product",
   data() {
-    return { tab: null };
+    return { tab: null, productList: [] };
+  },
+  async created() {
+    try {
+      let result = await axios.get("/coffee/product");
+      result.data
+        ? (this.productList = result.data)
+        : showMsg.call(this, "获取产品列表失败!");
+    } catch (error) {
+      showMsg.call(this, "服务器错误!");
+    }
   },
 };
 </script>

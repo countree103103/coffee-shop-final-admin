@@ -9,10 +9,27 @@
         <v-img src="../assets/latte.jpeg" class="lg:h-40" contain></v-img>
         <v-file-input label="修改图片" dense></v-file-input>
       </div>
-      <v-text-field label="名字" value="拿铁"></v-text-field>
-      <v-select :items="['上架', '下架']" value="上架"></v-select>
-      <v-text-field label="现价格" value="666"></v-text-field>
-      <v-text-field label="前价格" value="999"></v-text-field>
+      <input name="_id" :value="product.id" style="display: none" />
+      <v-text-field
+        label="名字"
+        :value="product.product_name"
+        name="product_name"
+      ></v-text-field>
+      <v-select
+        :items="['在架', '下架']"
+        :value="product.product_status"
+        name="product_status"
+      ></v-select>
+      <v-text-field
+        label="现价格"
+        :value="product.product_price_now"
+        name="product_price_now"
+      ></v-text-field>
+      <v-text-field
+        label="前价格"
+        :value="product.product_price_before"
+        name="product_price_before"
+      ></v-text-field>
       <div class="product-opt">
         <h1 class="mb-4">
           产品选项
@@ -25,7 +42,7 @@
 
         <div
           class="product-opt-item"
-          v-for="(opt, index) in optList"
+          v-for="(opt, index) in product.product_opt"
           :key="index"
         >
           <h2 class="product-opt-item-title">
@@ -36,21 +53,21 @@
           </h2>
           <div class="product-opt-item-list">
             <ol>
-              <li v-for="(item, index2) in opt.items" :key="index2">
+              <li v-for="(item, index2) in opt.attr" :key="index2">
                 {{ item
                 }}<v-btn icon x-small @click="delOptItem(opt, index2)"
                   ><v-icon>mdi-delete</v-icon></v-btn
                 >
               </li>
             </ol>
-            <v-btn icon small @click="addOptItem(opt.items)"
+            <v-btn icon small @click="addOptItem(opt.attr)"
               ><v-icon>mdi-plus</v-icon></v-btn
             >
           </div>
           <v-divider></v-divider>
         </div>
       </div>
-      <v-btn color="success" class="m-4">更新</v-btn>
+      <v-btn color="success" class="m-4" @click="update">更新</v-btn>
       <!-- <v-btn color="error" class="m-4">删除</v-btn> -->
     </v-form>
   </div>
@@ -69,30 +86,48 @@ export default {
         { title: "温度", items: ["cold", "warm", "hot"] },
         { title: "温度", items: [] },
       ],
+      product: null,
     };
+  },
+  created() {
+    // console.log(this.$route.params.product);
+    this.product = this.$route.params.product;
+    for (const i of this.product.product_opt) {
+      // console.log(i);
+      i["attr"] = i.attr.split(",");
+    }
   },
   methods: {
     addOpt() {
       let title = prompt("新增的属性是？");
       title
-        ? this.optList.push({ title: title, items: [] })
+        ? this.product.product_opt.push({ title: title, attr: [] })
         : showMsg.call(this, "属性名不能为空！");
     },
     delOpt(index) {
-      if (confirm("确认删除选项？")) this.optList.splice(index, 1);
+      if (confirm("确认删除选项？")) this.product.product_opt.splice(index, 1);
     },
-    addOptItem(opt) {
-      let attr = prompt("新增的属性是？");
-      attr ? opt.push(attr) : showMsg.call(this, "属性不能为空！");
-      opt.push();
+    addOptItem(attr) {
+      let new_attr = prompt("新增的属性是？");
+      new_attr ? attr.push(new_attr) : showMsg.call(this, "属性不能为空！");
     },
     delOptItem(opt, index) {
-      if (confirm("确认删除属性？")) opt.items.splice(index, 1);
+      if (confirm("确认删除属性？")) opt.attr.splice(index, 1);
     },
-    update() {
+    async update() {
       let formData = new FormData(this.$refs.productForm.$el);
-      formData.append("product_opt", this.optList);
-      axios.post("/coffee/admin/product/update", formData);
+      formData.append("product_opt", JSON.stringify(this.product.product_opt));
+      console.log(formData.entries());
+      try {
+        let result = await axios.post("/coffee/admin/product/update", formData);
+        if (result.data) {
+          showMsg.call(this, "更新成功！");
+        } else {
+          showMsg.call(this, "更新失败！");
+        }
+      } catch (error) {
+        showMsg.call(this, "服务器错误！");
+      }
     },
   },
 };
