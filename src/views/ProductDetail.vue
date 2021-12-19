@@ -6,8 +6,8 @@
     <v-form class="m-8" ref="productForm">
       <!-- <div class="flex flex-row justify-center items-center flex-wrap"> -->
       <div class="mb-4">
-        <v-img src="../assets/latte.jpeg" class="lg:h-40" contain></v-img>
-        <v-file-input label="修改图片" dense></v-file-input>
+        <v-img :src="product.product_img" class="lg:h-40" contain></v-img>
+        <v-file-input label="修改图片" dense v-model="fileInput"></v-file-input>
       </div>
       <input name="_id" :value="product.id" style="display: none" />
       <v-text-field
@@ -81,29 +81,33 @@
 
 <script>
 import axios from "axios";
-import { showMsg } from "../util";
+import { showMsg, reader } from "../util";
 
 export default {
   name: "ProductDetail",
   data() {
     return {
-      optList: [
-        { title: "温度", items: ["cold", "warm", "hot"] },
-        { title: "温度", items: ["cold", "warm", "hot"] },
-        { title: "温度", items: [] },
-      ],
+      fileInput: null,
       product: null,
     };
+  },
+  watch: {
+    async fileInput() {
+      let r = await reader(this.fileInput);
+      this.product.product_img = r.result;
+    },
   },
   created() {
     // console.log(this.$route.params.product);
     this.product = this.$route.params.product;
-    for (const i of this.product.product_opt) {
-      // console.log(i);
-      i["attr"] = i.attr.split(",");
-    }
+    this.parseProductOpt(this.product.product_opt);
   },
   methods: {
+    parseProductOpt(opt) {
+      for (const i of opt) {
+        i["attr"] = i.attr.split(",");
+      }
+    },
     addOpt() {
       let title = prompt("新增的属性是？");
       title
@@ -123,6 +127,7 @@ export default {
     async update() {
       let formData = new FormData(this.$refs.productForm.$el);
       formData.append("product_opt", JSON.stringify(this.product.product_opt));
+      formData.append("product_img", this.product.product_img);
       console.log(formData.entries());
       try {
         let result = await axios.post("/coffee/admin/product/update", formData);

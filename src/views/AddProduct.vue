@@ -2,8 +2,21 @@
   <div class="product-add p-4">
     <v-form ref="addProductForm">
       <div>
-        <v-file-input label="选择产品图片" dense></v-file-input>
-        <v-img></v-img>
+        <v-img :src="product.product_img" fluid height="200" contain>
+          <template v-slot:placeholder>
+            <div
+              class="flex justify-center items-center h-full border border-gray-800 rounded-lg border-dashed"
+            >
+              <p>请选择正确照片</p>
+            </div>
+          </template>
+        </v-img>
+        <v-file-input
+          class="mt-8"
+          label="选择产品图片"
+          dense
+          v-model="fileInput"
+        ></v-file-input>
       </div>
       <v-text-field name="product_name" label="产品名"></v-text-field>
       <v-textarea name="product_des" label="产品描述" outlined></v-textarea>
@@ -62,17 +75,26 @@
 </template>
 
 <script>
-import { showMsg } from "../util";
+import { reader, showMsg } from "../util";
 import axios from "axios";
 
 export default {
   name: "AddProduct",
   data() {
     return {
+      fileInput: null,
       product: {
+        product_img: "",
         product_opt: [],
       },
     };
+  },
+  computed: {},
+  watch: {
+    async fileInput() {
+      let r = await reader(this.fileInput);
+      this.product.product_img = r.result;
+    },
   },
   methods: {
     addOpt() {
@@ -94,6 +116,7 @@ export default {
     async addProduct() {
       let formData = new FormData(this.$refs.addProductForm.$el);
       formData.append("product_opt", JSON.stringify(this.product.product_opt));
+      formData.append("product_img", this.product.product_img);
       try {
         let result = await axios.post("/coffee/admin/product/add", formData);
         if (result.data) {
