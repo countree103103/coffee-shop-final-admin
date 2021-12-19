@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <v-simple-table class="whitespace-nowrap">
+      <v-simple-table>
         <thead>
           <tr>
             <th>订单ID</th>
@@ -18,7 +18,7 @@
           <tr v-for="order in orderList" :key="order.id">
             <td>{{ order.id }}</td>
             <td>{{ new Date(order.order_create_time).toLocaleString() }}</td>
-            <td class="bg-green-100 font-bold">
+            <td class="bg-green-100 font-bold whitespace-nowrap">
               <tr
                 v-for="(product, index) in parseProductList(
                   JSON.parse(order.product_list)
@@ -41,7 +41,9 @@
             </td>
             <td>
               <div>
-                <v-btn color="success" small>更新</v-btn>
+                <v-btn color="success" small @click="updateOrder(order)"
+                  >更新</v-btn
+                >
               </div>
             </td>
           </tr>
@@ -73,6 +75,24 @@ export default {
           this.orderList = result.data;
         } else {
           showMsg.call(this, "获取订单列表失败!");
+        }
+      } catch (error) {
+        console.log(error);
+        showMsg.call(this, "服务器错误!");
+      }
+    },
+    //目前仅允许更新订单状态
+    async updateOrder(order) {
+      let formData = new FormData();
+      formData.append("_id", order.id);
+      formData.append("order_status", order.order_status);
+
+      try {
+        let result = await axios.post("/coffee/admin/order/update", formData);
+        if (result.data) {
+          showMsg.call(this, "订单更新成功!");
+        } else {
+          showMsg.call(this, "订单更新失败!");
         }
       } catch (error) {
         console.log(error);
