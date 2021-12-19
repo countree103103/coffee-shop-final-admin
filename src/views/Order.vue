@@ -18,7 +18,7 @@
           <tr v-for="order in orderList" :key="order.id">
             <td>{{ order.id }}</td>
             <td>{{ new Date(order.order_create_time).toLocaleString() }}</td>
-            <td class="bg-green-100 font-bold whitespace-nowrap">
+            <td class="bg-green-50 font-bold whitespace-nowrap">
               <tr
                 v-for="(product, index) in parseProductList(
                   JSON.parse(order.product_list)
@@ -28,7 +28,7 @@
                 <td>{{ product }}</td>
               </tr>
             </td>
-            <td class="bg-green-100 font-bold">{{ order.address }}</td>
+            <td class="bg-green-50 font-bold">{{ order.address }}</td>
             <td>{{ order.payment_type }}</td>
             <td>{{ order.order_sum }}</td>
             <td class="w-40">
