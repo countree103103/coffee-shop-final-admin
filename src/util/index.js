@@ -1,3 +1,5 @@
+import axios from "axios";
+
 function goTo(url) {
   this.$router.push(url);
 }
@@ -33,9 +35,22 @@ function reader(file, options) {
 }
 
 const checkIfLogin_mixin = {
-  created() {
+  async created() {
     if (!this.$store.state.user) {
-      showMsg.call(this, "未登录!");
+      try {
+        let result = await axios.get("/coffee/user/getUserInfo");
+        if (result.data) {
+          this.$store.state.user = result.data;
+          this.$router.push({ path: "/product" });
+        } else {
+          showMsg.call(this, "未登录!");
+          this.$router.push({ path: "/auth" });
+        }
+      } catch (error) {
+        console.log(error);
+        showMsg.call(this, "服务器错误!获取用户session失败");
+      }
+    } else {
       this.$router.push({ path: "/auth" });
     }
   },
