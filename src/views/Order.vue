@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <v-simple-table>
+      <!-- <v-simple-table>
         <thead>
           <tr>
             <th>订单ID</th>
@@ -48,7 +48,40 @@
             </td>
           </tr>
         </tbody>
-      </v-simple-table>
+      </v-simple-table> -->
+      <v-data-table
+        :items-per-page="table.items_per_page"
+        :headers="table.headers"
+        :items="table.items"
+      >
+        <template v-slot:item.order_status="{ item }">
+          <v-select
+            class="w-28"
+            :items="['待确认', '准备中', '配送中', '订单完成', '订单取消']"
+            v-model="item.order_status"
+            label=""
+            dense
+          ></v-select>
+        </template>
+        <template v-slot:item.update="{ item }">
+          <div>
+            <v-btn color="success" small @click="updateOrder(item)">更新</v-btn>
+          </div>
+        </template>
+        <template v-slot:item.order_create_time="{ item }">
+          {{ new Date(item.order_create_time).toLocaleString() }}
+        </template>
+        <template v-slot:item.product_list="{ item }">
+          <tr
+            v-for="(product, index) in parseProductList(
+              JSON.parse(item.product_list)
+            )"
+            :key="index"
+          >
+            <td>{{ product }}</td>
+          </tr>
+        </template>
+      </v-data-table>
     </div>
   </div>
 </template>
@@ -62,6 +95,24 @@ export default {
   data() {
     return {
       orderList: [],
+      table: {
+        headers: [
+          { sortable: true, text: "订单ID", value: "id" },
+          { sortable: false, text: "创建时间", value: "order_create_time" },
+          {
+            sortable: false,
+            text: "产品列表(产品名/数量/选项)",
+            value: "product_list",
+          },
+          { sortable: false, text: "地址(姓名/地址/电话)", value: "address" },
+          { sortable: false, text: "支付方式", value: "payment_type" },
+          { sortable: true, text: "总额(元)", value: "order_sum" },
+          { sortable: true, text: "订单状态", value: "order_status" },
+          { sortable: false, text: "操作", value: "update" },
+        ],
+        items: [],
+        items_per_page: 5,
+      },
     };
   },
   created() {
@@ -73,6 +124,7 @@ export default {
         let result = await axios.get("/coffee/order");
         if (result.data) {
           this.orderList = result.data;
+          this.table.items = this.orderList;
         } else {
           showMsg.call(this, "获取订单列表失败!");
         }
