@@ -56,6 +56,7 @@ export default {
   data() {
     return {
       productList: [],
+      interval: null,
     };
   },
   methods: {
@@ -95,7 +96,12 @@ export default {
   },
   async created() {
     this.getProductList();
-    setInterval(this.getProductList, 1000 * 10);
+    if (!this.interval) {
+      this.interval = setInterval(this.getProductList, 1000 * 10);
+    }
+  },
+  beforeDestroy() {
+    clearInterval(this.interval);
   },
 };
 </script>
