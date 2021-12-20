@@ -98,7 +98,7 @@ export default {
       table: {
         headers: [
           { sortable: true, text: "订单ID", value: "id" },
-          { sortable: false, text: "创建时间", value: "order_create_time" },
+          { sortable: true, text: "创建时间", value: "order_create_time" },
           {
             sortable: false,
             text: "产品列表(产品名/数量/选项)",
