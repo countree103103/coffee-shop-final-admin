@@ -9,6 +9,7 @@ export default new Vuex.Store({
       show: false,
       msg: "",
     },
+    user: null,
   },
   mutations: {},
   actions: {},

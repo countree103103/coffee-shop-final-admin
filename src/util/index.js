@@ -32,4 +32,13 @@ function reader(file, options) {
   });
 }
 
-export { goTo, showMsg, reader };
+const checkIfLogin_mixin = {
+  created() {
+    if (!this.$store.state.user) {
+      showMsg.call(this, "未登录!");
+      this.$router.push({ path: "/auth" });
+    }
+  },
+};
+
+export { goTo, showMsg, reader, checkIfLogin_mixin };

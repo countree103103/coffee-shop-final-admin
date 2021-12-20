@@ -14,7 +14,7 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn icon><v-icon>mdi-logout</v-icon></v-btn>
+      <v-btn icon @click="logout"><v-icon>mdi-logout</v-icon></v-btn>
 
       <!-- <v-btn icon>
         <v-icon>mdi-magnify</v-icon>
@@ -39,7 +39,7 @@
       </v-menu> -->
 
       <template v-slot:extension>
-        <v-tabs align-with-title>
+        <v-tabs align-with-title v-if="$store.state.user">
           <v-tab @click="$router.push('/product')">产品管理</v-tab>
           <v-tab @click="$router.push('/user')">用户管理</v-tab>
           <v-tab @click="$router.push('/order')">订单管理</v-tab>
@@ -66,13 +66,27 @@
 </template>
 
 <script>
+import axios from "axios";
+import { showMsg } from "./util";
+
 export default {
   name: "App",
 
   data: () => ({
     //
   }),
-  methods: {},
+  created() {},
+  methods: {
+    async logout() {
+      let result = await axios.post("/coffee/user/logout");
+      if (result.data) {
+        this.$store.state.user = null;
+        this.$router.push("/auth");
+      } else {
+        showMsg(this, "登出失败!");
+      }
+    },
+  },
 };
 </script>
 <style lang="scss">
