@@ -133,6 +133,7 @@ export default {
         let result = await axios.post("/coffee/admin/product/update", formData);
         if (result.data) {
           showMsg.call(this, "更新成功！");
+          this.$router.push({ name: "Product" });
         } else {
           showMsg.call(this, "更新失败！");
         }
