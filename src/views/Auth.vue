@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-center items-center h-full w-full">
-    <v-card width="50%" class="p-8">
+    <v-card width="50%" class="p-8" color="rgba(81, 44, 29, 0.3)">
       <v-card-title>请登陆</v-card-title>
       <v-card-text>
         <v-form ref="loginForm">
@@ -15,7 +15,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="success" @click="login" :loading="form.login.loading"
+        <v-btn outlined color="" @click="login" :loading="form.login.loading"
           >登入</v-btn
         >
       </v-card-actions>
@@ -45,7 +45,7 @@ export default {
         let loginForm = new FormData(this.$refs.loginForm.$el);
         try {
           this.form.login.loading = true;
-          let res = await axios.post(`/coffee/user/login`, loginForm);
+          let res = await axios.post(`/coffee/admin/user/login`, loginForm);
           console.log(res.data);
           if (res.data) {
             let result = await axios.get(`/coffee/user/getUserInfo`, {
