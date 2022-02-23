@@ -55,7 +55,15 @@
         :items="table.items"
         sort-by="order_create_time"
         sort-desc="true"
+        :search="search"
       >
+        <template v-slot:top>
+          <v-text-field
+            v-model="search"
+            label="搜索及过滤"
+            class="mx-4"
+          ></v-text-field>
+        </template>
         <template v-slot:item.order_status="{ item }">
           <v-select
             class="w-28"
@@ -97,6 +105,7 @@ export default {
   data() {
     return {
       orderList: [],
+      search: "",
       table: {
         headers: [
           { sortable: true, text: "订单ID", value: "id" },
@@ -109,7 +118,7 @@ export default {
           { sortable: false, text: "地址(姓名/地址/电话)", value: "address" },
           { sortable: false, text: "支付方式", value: "payment_type" },
           { sortable: true, text: "总额(元)", value: "order_sum" },
-          { sortable: false, text: "订单状态", value: "order_status" },
+          { sortable: true, text: "订单状态", value: "order_status" },
           { sortable: false, text: "操作", value: "update" },
         ],
         items: [],
