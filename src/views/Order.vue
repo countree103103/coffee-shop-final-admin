@@ -53,6 +53,8 @@
         :items-per-page="table.items_per_page"
         :headers="table.headers"
         :items="table.items"
+        sort-by="order_create_time"
+        sort-desc="true"
       >
         <template v-slot:item.order_status="{ item }">
           <v-select
