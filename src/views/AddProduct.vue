@@ -18,12 +18,17 @@
           v-model="fileInput"
         ></v-file-input>
       </div>
-      <v-text-field name="product_name" label="产品名"></v-text-field>
+      <v-text-field
+        name="product_name"
+        label="产品名"
+        :rules="[(val) => (val && val.length > 0) || '不能为空']"
+      ></v-text-field>
       <v-textarea name="product_des" label="产品描述" outlined></v-textarea>
       <v-text-field
         name="product_price_now"
         label="价格"
         hint="单位 元￥"
+        :rules="[(val) => (val && val.length > 0) || '不能为空']"
       ></v-text-field>
       <div class="product-opt">
         <h1 class="mb-4">
@@ -98,35 +103,42 @@ export default {
   },
   methods: {
     addOpt() {
-      let title = prompt("新增的属性是？");
+      let title = prompt("新增的选项是？");
       title
         ? this.product.product_opt.push({ title: title, attr: [] })
-        : showMsg.call(this, "属性名不能为空！");
+        : showMsg.call(this, "选项名不能为空！");
     },
     delOpt(index) {
       if (confirm("确认删除选项？")) this.product.product_opt.splice(index, 1);
     },
     addOptItem(attr) {
-      let new_attr = prompt("新增的属性是？");
+      let new_attr = prompt("选项新增的属性是？");
       new_attr ? attr.push(new_attr) : showMsg.call(this, "属性不能为空！");
     },
     delOptItem(opt, index) {
       if (confirm("确认删除属性？")) opt.attr.splice(index, 1);
     },
     async addProduct() {
-      let formData = new FormData(this.$refs.addProductForm.$el);
-      formData.append("product_opt", JSON.stringify(this.product.product_opt));
-      formData.append("product_img", this.product.product_img);
-      try {
-        let result = await axios.post("/coffee/admin/product/add", formData);
-        if (result.data) {
-          showMsg.call(this, "添加商品成功!");
-        } else {
-          showMsg.call(this, "添加商品失败!");
+      if (this.$refs.addProductForm.validate()) {
+        let formData = new FormData(this.$refs.addProductForm.$el);
+        formData.append(
+          "product_opt",
+          JSON.stringify(this.product.product_opt)
+        );
+        formData.append("product_img", this.product.product_img);
+        try {
+          let result = await axios.post("/coffee/admin/product/add", formData);
+          if (result.data) {
+            showMsg.call(this, "添加商品成功!");
+          } else {
+            showMsg.call(this, "添加商品失败!");
+          }
+        } catch (error) {
+          console.log(error);
+          showMsg.call(this, "服务器错误!");
         }
-      } catch (error) {
-        console.log(error);
-        showMsg.call(this, "服务器错误!");
+      } else {
+        null;
       }
     },
     resetForm() {
