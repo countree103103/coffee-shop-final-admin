@@ -57,6 +57,10 @@
         sort-desc="true"
         :search="search"
       >
+        <template v-slot:no-data>
+          <h1>暂无订单</h1>
+        </template>
+        <template v-slot:item.data-table-select></template>
         <template v-slot:top>
           <v-text-field
             v-model="search"
