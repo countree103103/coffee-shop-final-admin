@@ -136,7 +136,7 @@ export default {
   methods: {
     async getOrderList() {
       try {
-        let result = await axios.get("/coffee/order");
+        let result = await axios.get("/coffee/admin/order");
         if (result.data) {
           this.orderList = result.data;
           this.table.items = this.orderList;
