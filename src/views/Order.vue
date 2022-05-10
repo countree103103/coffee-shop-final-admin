@@ -84,6 +84,7 @@
             v-model="item.order_status"
             label=""
             dense
+            @change="onSelectChange(item)"
           ></v-select>
         </template>
         <template v-slot:item.update="{ item }">
@@ -205,6 +206,10 @@ export default {
         arr.push(tmp.join("/"));
       }
       return arr;
+    },
+    onSelectChange(order) {
+      console.log(order);
+      this.updateOrder(order);
     },
   },
 };
