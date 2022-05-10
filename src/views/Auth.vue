@@ -1,6 +1,9 @@
 <template>
-  <div class="flex justify-center items-center h-full w-full">
-    <v-card width="50%" class="p-8" color="rgba(81, 44, 29, 0.3)">
+  <div
+    class="flex justify-center items-center h-full w-full"
+    style="background-color: rgba(81, 44, 29, 0.3)"
+  >
+    <v-card width="50%" class="p-8" color="">
       <v-card-title>请登陆</v-card-title>
       <v-card-text>
         <v-form ref="loginForm">
