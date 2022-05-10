@@ -6,7 +6,7 @@
     <v-form class="m-8" ref="productForm">
       <!-- <div class="flex flex-row justify-center items-center flex-wrap"> -->
       <div class="mb-4">
-        <v-img :src="product.product_img" class="lg:h-40" contain></v-img>
+        <v-img :src="product.product_img" height="200" contain></v-img>
         <v-file-input label="修改图片" dense v-model="fileInput"></v-file-input>
       </div>
       <input name="_id" :value="product.id" style="display: none" />
