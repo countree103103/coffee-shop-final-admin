@@ -2,7 +2,7 @@
   <div class="product-add p-4">
     <v-form ref="addProductForm">
       <div>
-        <v-img :src="product.product_img" fluid height="200" contain>
+        <v-img :src="product.product_img" height="200" contain>
           <template v-slot:placeholder>
             <div
               class="flex justify-center items-center h-full border border-gray-800 rounded-lg border-dashed"
