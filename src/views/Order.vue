@@ -49,19 +49,28 @@
           </tr>
         </tbody>
       </v-simple-table> -->
+      <div class="flex flex-row justify-center align-middle mt-2 mb-2">
+        <v-btn-toggle v-model="selectedOrder">
+          <v-btn small>待确认</v-btn>
+          <v-btn small>准备中</v-btn>
+          <v-btn small>配送中</v-btn>
+          <v-btn small>订单完成</v-btn>
+          <v-btn small>订单取消</v-btn>
+        </v-btn-toggle>
+      </div>
       <v-data-table
         :items-per-page="table.items_per_page"
         :headers="table.headers"
-        :items="table.items"
+        :items="cOrderList"
         sort-by="order_create_time"
-        sort-desc="true"
+        :sort-desc="true"
         :search="search"
       >
         <template v-slot:no-data>
           <h1>暂无订单</h1>
         </template>
         <template v-slot:item.data-table-select></template>
-        <template v-slot:top>
+        <template v-slot:foot>
           <v-text-field
             v-model="search"
             label="搜索及过滤"
@@ -104,6 +113,14 @@
 import axios from "axios";
 import { showMsg } from "../util";
 
+const enumOrderStatus = {
+  0: "待确认",
+  1: "准备中",
+  2: "配送中",
+  3: "订单完成",
+  4: "订单取消",
+};
+
 export default {
   name: "Order",
   data() {
@@ -128,7 +145,15 @@ export default {
         items: [],
         items_per_page: 5,
       },
+      selectedOrder: 0,
     };
+  },
+  computed: {
+    cOrderList() {
+      return this.orderList.filter((order) => {
+        return order.order_status == enumOrderStatus[this.selectedOrder];
+      });
+    },
   },
   created() {
     this.getOrderList();
